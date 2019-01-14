@@ -5,8 +5,8 @@
 
 ## How to run?
 - cd src path
-- docker-compose -f citus.yml
-- docker-compose -f cockroach.yml
+- docker-compose -f citus.yml up
+- docker-compose -f cockroach.yml up
 - docker exec -it roach-0 /bin/bash
 - ./cockroach sql --insecure
 - in sql state exec below sql
