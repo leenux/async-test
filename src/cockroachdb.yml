@@ -1,0 +1,19 @@
+version: '3.5'
+
+networks:
+  cherry-network:
+    name: cherry-network
+    driver: bridge
+
+services:
+
+  roach-0:
+    container_name: roach-0
+    hostname: roach-0
+    image: cockroachdb/cockroach:${COCKROACH_VERSION:-v2.1.3}
+    networks:
+    - cherry-network
+    command: start --insecure
+    ports:
+    - 8181:8080
+    - 26257:26257

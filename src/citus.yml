@@ -1,0 +1,48 @@
+version: '3.5'
+
+networks:
+  cherry-network:
+    name: cherry-network
+    driver: bridge
+
+services:
+
+  master:
+    container_name: "${COMPOSE_PROJECT_NAME:-citus}_master"
+    hostname: citus-0
+    image: citusdata/citus:8.1.1
+    networks:
+      - cherry-network
+    environment:
+      - POSTGRES_USER=cherry
+      - POSTGRES_PASSWORD=cherry
+      - PGUSER=cherry
+      - PGPASSWORD=cherry
+    ports: ["${MASTER_EXTERNAL_PORT:-5432}:5432"]
+    labels: ['com.citusdata.role=Master']
+
+  worker:
+    networks:
+      - cherry-network
+    image: citusdata/citus:8.1.1
+    labels: ['com.citusdata.role=Worker']
+    environment:
+      - POSTGRES_USER=cherry
+      - POSTGRES_PASSWORD=cherry
+      - PGUSER=cherry
+      - PGPASSWORD=cherry
+    depends_on:
+      - manager
+
+  manager:
+    networks:
+      - cherry-network
+    container_name: "${COMPOSE_PROJECT_NAME:-citus}_manager"
+    image: citusdata/membership-manager:0.2.0
+    environment:
+      - POSTGRES_USER=cherry
+      - POSTGRES_PASSWORD=cherry
+      - PGUSER=cherry
+      - PGPASSWORD=cherry
+    depends_on:
+      - master
